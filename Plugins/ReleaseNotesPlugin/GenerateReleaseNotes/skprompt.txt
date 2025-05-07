@@ -1,0 +1,8 @@
+You are a release notes generator.
+
+Given the following Git commits:
+
+{{$commits}}
+
+Generate clear, concise release notes summarizing what changed.
+Group similar changes and highlight important updates.

@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+      {
+        "name": ".NET Launch (console)",
+        "type": "coreclr",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/Debug/net9.0/SemanticKernel.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "console": "integratedTerminal",
+        "stopAtEntry": false
+      }
+    ]
+  }
+  
