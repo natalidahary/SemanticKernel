@@ -1,9 +1,9 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 using Plugins;
+using SemanticKernel;
 
 // loads appsettings.json (if present) so you can access settings like the OpenAI key and endpoint
 var configuration = new ConfigurationBuilder()
@@ -24,6 +24,8 @@ var gitPlugin = new GitPlugin(repoPath);
 // Register the plugin
 builder.Plugins.AddFromObject(gitPlugin, "GitPlugin");
 builder.Plugins.AddFromPromptDirectory("Plugins/ReleaseNotesPlugin");
+builder.Plugins.AddFromPromptDirectory("Plugins/CommitExplainer");
+
 
 var kernel = builder.Build();
 
@@ -32,7 +34,7 @@ foreach (var plugin in kernel.Plugins)
     Console.WriteLine($"[DEBUG] Loaded plugin: {plugin.Name}");
     foreach (var function in plugin)
     {
-        Console.WriteLine($"         ↳ Function: {function.Name}");
+        Console.WriteLine($"     Function: {function.Name}");
     }
 }
 
@@ -53,6 +55,8 @@ if (!string.IsNullOrWhiteSpace(systemPrompt))
     chatHistory.AddSystemMessage(systemPrompt);
 }
 
+HelperFunctions.ShowMenu();
+
 while (true)
 {
     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -62,26 +66,27 @@ while (true)
     var userInput = Console.ReadLine();
 
     if (string.IsNullOrWhiteSpace(userInput)) continue;
-    if (userInput == "exit") break;
+    if (userInput == Commands.Exit) break;
 
-    if (userInput == "!help")
+    if (userInput == Commands.Help)
     {
         Console.WriteLine("Available commands:");
-        Console.WriteLine("  !commits             - Show the latest Git commits");
-        Console.WriteLine("  !setrepo <path>      - Set the current Git repository path");
-        Console.WriteLine("  !releasenotes [n]    - Generate release notes from the last [n] commits (default 10)");
-        Console.WriteLine("  !pull                - Pull latest changes from remote");
-        Console.WriteLine("  !commit \"message\"   - Stage all and commit with given message");
-        Console.WriteLine("  !findfixes           - Show commits containing the word 'fix'");
-        Console.WriteLine("  !diff <sha1> <sha2>  - Compare two commits and list changes");
-        Console.WriteLine("  !help                - Show this help message");
-        Console.WriteLine("  exit                 - Quit the app");
-        Console.WriteLine("  [anything else]      - Sent to AI via Azure OpenAI");
-        continue;
+                Console.WriteLine("  !commits                   - Show the latest Git commits");
+                Console.WriteLine("  !setrepo <path>            - Set the current Git repository path");
+                Console.WriteLine("  !releasenotes [n]          - Generate release notes from the last [n] commits (default 10)");
+                Console.WriteLine("  !explain \"commit msg\"      - Explain a commit in plain English");
+                Console.WriteLine("  !pull                      - Pull latest changes from remote");
+                Console.WriteLine("  !commit \"message\"          - Stage all and commit with given message");
+                Console.WriteLine("  !findfixes                 - Show commits containing the word 'fix'");
+                Console.WriteLine("  !diff <sha1> <sha2>        - Compare two commits and list changes");
+                Console.WriteLine("  !help                      - Show this help message again");
+                Console.WriteLine("  exit                       - Quit the app");
+                Console.WriteLine("  [anything else]            - Sent to AI via Azure OpenAI");
+                continue;
     }
 
     //Handle plugin commands
-    if (userInput.StartsWith("!commits"))
+    if (userInput.StartsWith(Commands.Commits))
     {
         var result = await kernel.InvokeAsync("GitPlugin", "GetLatestCommits", new KernelArguments
         {
@@ -91,7 +96,7 @@ while (true)
         continue;
     }
 
-    if (userInput.StartsWith("!setrepo "))
+    if (userInput.StartsWith(Commands.SetRepo + " "))
     {
         var path = userInput.Substring("!setrepo ".Length);
         var result = await kernel.InvokeAsync("GitPlugin", "SetRepositoryPath", new KernelArguments
@@ -102,14 +107,14 @@ while (true)
         continue;
     }
 
-    if (userInput.StartsWith("!releasenotes"))
+    if (userInput.StartsWith(Commands.ReleaseNotes))
     {
         var parts = userInput.Split(' ');
         int count = (parts.Length > 1 && int.TryParse(parts[1], out var parsed)) ? parsed : 10;
 
         //Read current version
         var currentVersion = File.Exists("VERSION") ? File.ReadAllText("VERSION").Trim() : "0.0.0";
-        var newVersion = IncrementPatchVersion(currentVersion);
+        var newVersion = HelperFunctions.IncrementPatchVersion(currentVersion);
 
         Console.WriteLine($"[DEBUG] Current version: {currentVersion} → New version: {newVersion}");
 
@@ -140,14 +145,27 @@ while (true)
         continue;
     }
 
-    if (userInput.StartsWith("!pull"))
+    if (userInput.StartsWith(Commands.Explain + " "))
+    {
+        var commitText = userInput.Substring("!explain ".Length).Trim('"');
+
+        var explainResult = await kernel.InvokeAsync("CommitExplainer", "ExplainCommit", new KernelArguments
+        {
+            ["commit"] = commitText
+        });
+
+        Console.WriteLine($"[CommitExplainer] {explainResult.GetValue<string>()}");
+        continue;
+    }
+
+    if (userInput.StartsWith(Commands.Pull))
     {
         var result = await kernel.InvokeAsync("GitPlugin", "PullRepository");
         Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
         continue;
     }
 
-    if (userInput.StartsWith("!commit "))
+    if (userInput.StartsWith(Commands.Commit))
     {
         var message = userInput.Substring("!commit ".Length).Trim('"');
         var result = await kernel.InvokeAsync("GitPlugin", "CommitAllChanges", new KernelArguments
@@ -158,7 +176,7 @@ while (true)
         continue;
     }
 
-    if (userInput.StartsWith("!findfixes"))
+    if (userInput.StartsWith(Commands.FindFixes))
     {
         var result = await kernel.InvokeAsync("GitPlugin", "FindCommitsByKeyword", new KernelArguments
         {
@@ -168,7 +186,7 @@ while (true)
         continue;
     }
 
-    if (userInput.StartsWith("!diff "))
+    if (userInput.StartsWith(Commands.Diff))
     {
         var parts = userInput.Split(" ");
         if (parts.Length >= 3)
@@ -202,17 +220,7 @@ while (true)
 
 }
 
-string IncrementPatchVersion(string currentVersion)
-{
-    var parts = currentVersion.Split('.');
-    if (parts.Length != 3) return "0.0.1"; // fallback
 
-    int major = int.Parse(parts[0]);
-    int minor = int.Parse(parts[1]);
-    int patch = int.Parse(parts[2]) + 1;
-
-    return $"{major}.{minor}.{patch}";
-}
 
 
 // do

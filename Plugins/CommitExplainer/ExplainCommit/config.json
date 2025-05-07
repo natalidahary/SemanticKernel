@@ -1,0 +1,17 @@
+{
+    "schema": 1,
+    "description": "Explains a commit in plain English.",
+    "type": "completion",
+    "completion": {
+      "max_tokens": 300,
+      "temperature": 0.5
+    },
+    "input_variables": [
+      {
+        "name": "commit",
+        "description": "A Git commit message or full diff to explain.",
+        "default": ""
+      }
+    ]
+  }
+  
