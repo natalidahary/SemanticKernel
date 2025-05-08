@@ -4,6 +4,11 @@ using System.Threading.Tasks;
 
 namespace SemanticKernel.Utils;
 
+/// <summary>
+/// Wraps all interactions with the GitPlugin into helper methods 
+/// for fetching commits, setting repo path, pulling, committing, etc.
+/// Keeps the main program loop clean and modular.
+/// </summary>
 public static class GitPluginHandler
 {
     public static async Task ShowCommitsAsync(Kernel kernel)

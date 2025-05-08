@@ -1,6 +1,9 @@
 namespace SemanticKernel.Constants
 
 {
+    /// <summary>
+    /// Defines all supported CLI commands as constants to ensure consistency and reusability throughout the app.
+    /// </summary>
     public static class Commands
     {
         public const string Help = "!help";

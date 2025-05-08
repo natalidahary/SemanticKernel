@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace SemanticKernel.Utils
 {
+    /// <summary>
+    /// Uses the CommitExplainer plugin to interpret commit messages into plain English.
+    /// Appends each explanation to EXPLAIN.md.
+    /// </summary>
     public static class CommitExplanationHandler
     {
         private const string FileName = "EXPLAIN.md";

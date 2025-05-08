@@ -2,6 +2,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace SemanticKernel.Config;
 
+/// <summary>
+/// Loads and provides access to configuration values from appsettings.json.
+/// These values include OpenAI API credentials, repository path, and system prompt settings.
+/// </summary>
 public class AppConfiguration
 {
     private readonly IConfigurationRoot _configuration;

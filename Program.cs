@@ -7,36 +7,39 @@ using SemanticKernel.Config;
 using SemanticKernel.Utils;
 using SemanticKernel.Constants;
 
-
+// Load configuration values from appsettings.json
 var config = new AppConfiguration();
 
-// Create and configure the kernel
+// Create and configure the Semantic Kernel with Azure OpenAI model
 var builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(config.ModelName, config.Endpoint, config.ApiKey);
 
+// Create GitPlugin with the configured repository path
 var gitPlugin = new GitPlugin(config.RepoPath);
 
-// Register the plugin
+// Register custom plugins (functions and prompt templates)
 builder.Plugins.AddFromObject(gitPlugin, "GitPlugin");
 builder.Plugins.AddFromPromptDirectory("Plugins/ReleaseNotesPlugin");
 builder.Plugins.AddFromPromptDirectory("Plugins/CommitExplainer");
 
+// Build the kernel which manages plugins and LLM communication
 var kernel = builder.Build();
-
 
 HelperFunctions.PrintLoadedPlugins(kernel);
 
-//retrieves the chat service from the kernel, which will actually send/receive AI responses
+// Retrieve the chat service for free-text AI conversations
 var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
-//tell Semantic Kernel how to choose functions if any are defined
+// Define how the AI should behave (auto function selection, etc.)
 AzureOpenAIPromptExecutionSettings openAiPromptExecutionSettings = new()
 {
     FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
 };
 
+// Maintain conversation history (user + AI messages)
 var chatHistory = new ChatHistory();
 
+// Load optional system prompt if configured (helps steer AI responses)
 var systemPrompt = config.SystemPrompt;
 if (!string.IsNullOrWhiteSpace(systemPrompt))
 {
@@ -47,6 +50,7 @@ HelperFunctions.ShowMenu();
 
 while (true)
 {
+    // Prompt user for input
     Console.ForegroundColor = ConsoleColor.Cyan;
     Console.Write("Me > ");
     Console.ResetColor();
@@ -127,7 +131,7 @@ while (true)
         continue;
     }
 
-    //Send to LLM as a chat message
+    // If input is not a command, treat it as natural language and send to AI
     chatHistory.AddUserMessage(userInput);
 
     var response = await chatCompletionService.GetChatMessageContentAsync(chatHistory, openAiPromptExecutionSettings, kernel);
@@ -141,68 +145,3 @@ while (true)
     }
 
 }
-
-
-
-
-// do
-// {
-//     Console.ForegroundColor = ConsoleColor.Cyan;
-//     //Reads your message from the terminal
-//     Console.Write("Me > ");
-//     Console.ResetColor();
-
-//     var userInput = Console.ReadLine();
-//     if (userInput == "exit")
-//     {
-//         break;
-//     }
-
-//     //Adds your message to the ongoing conversation history
-//     history.AddUserMessage(userInput!);
-
-//     //sends your entire chat history to the AI and begins streaming the response in real time.
-//     var streamingResponse =
-//         chatCompletionService.GetStreamingChatMessageContentsAsync(
-//             history,
-//             openAiPromptExecutionSettings,
-//             kernel);
-
-//     Console.ForegroundColor = ConsoleColor.Green;
-//     Console.Write("Agent > ");
-//     Console.ResetColor();
-
-//     var fullResponse = "";
-//     //prints each chunk immediately to the terminal
-//     await foreach (var chunk in streamingResponse)
-//     {
-//         Console.ForegroundColor = ConsoleColor.Yellow;
-//         Console.Write(chunk.Content);
-//         Console.ResetColor();
-//         fullResponse += chunk.Content;
-//     }
-//     Console.WriteLine();
-
-//     //Adds the AI's full response to the chat history so it has memory for the next message
-//     history.AddMessage(AuthorRole.Assistant, fullResponse);
-
-
-// } while (true);
-
-
-// AzureOpenAIPromptExecutionSettings settings = new()
-// {
-//     MaxTokens = 100,
-//     Temperature = 0.7
-// };
-
-// var singleTurnHistory = new ChatHistory();
-// singleTurnHistory.AddUserMessage("Write a funny joke");
-
-// var response = await chatCompletionService.GetChatMessageContentAsync(
-//     singleTurnHistory,
-//     settings,
-//     kernel
-// );
-
-// Console.WriteLine("AI > " + response.Content);

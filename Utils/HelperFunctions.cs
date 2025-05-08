@@ -2,6 +2,11 @@ using Microsoft.SemanticKernel;
 
 namespace SemanticKernel.Utils;
 
+/// <summary>
+/// Utility class that provides helper methods used across the app,
+/// such as displaying the command menu, showing loaded plugins,
+/// and incrementing semantic versions.
+/// </summary>
 public static class HelperFunctions
 {
     public static void PrintLoadedPlugins(Kernel kernel)

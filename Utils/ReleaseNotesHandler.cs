@@ -3,6 +3,10 @@ using System;
 
 namespace SemanticKernel.Utils;
 
+/// <summary>
+/// Handles generating release notes from recent Git commits using the ReleaseNotesPlugin.
+/// Also manages versioning and writing output to RELEASE_NOTES.md and VERSION file.
+/// </summary>
 public static class ReleaseNotesHandler
 {
     public static async Task GenerateAndSaveReleaseNotesAsync(Kernel kernel, int count = 10)
