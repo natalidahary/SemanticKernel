@@ -40,3 +40,17 @@ This version lays the foundation for the project. No additional features or chan
 
 - Additional changes and enhancements implemented following the initial creation.
 
+## v1.0.4 - 2025-05-08
+
+## Release Notes
+
+### Major Updates
+- **Developed AI Functionality Using Semantic Kernel**  
+  Implemented core AI capabilities leveraging the Semantic Kernel framework. This provides advanced semantic processing within the application for more intelligent features.
+
+### Other Changes
+- **Initial Commit**  
+  Project structure and basic setup established.
+
+- **Other Minor Updates**  
+  Miscellaneous minor change ("ghjk") included in this release.

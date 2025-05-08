@@ -1,4 +1,5 @@
-namespace SemanticKernel
+namespace SemanticKernel.Constants
+
 {
     public static class Commands
     {

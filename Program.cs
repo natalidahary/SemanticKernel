@@ -3,45 +3,33 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 using Plugins;
-using SemanticKernel;
+using SemanticKernel.Config;
+using SemanticKernel.Utils;
+using SemanticKernel.Constants;
 
-// loads appsettings.json (if present) so you can access settings like the OpenAI key and endpoint
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .Build();
 
-var modelName = configuration["ModelName"] ?? throw new ApplicationException("ModelName not found");
-var endpoint = configuration["Endpoint"] ?? throw new ApplicationException("Endpoint not found");
-var apiKey = configuration["ApiKey"] ?? throw new ApplicationException("ApiKey not found");
+var config = new AppConfiguration();
 
-//creates the Semantic Kernel instance and connects it to Azure OpenAI's chat completion API
+// Create and configure the kernel
 var builder = Kernel.CreateBuilder()
-    .AddAzureOpenAIChatCompletion(modelName, endpoint, apiKey);
+    .AddAzureOpenAIChatCompletion(config.ModelName, config.Endpoint, config.ApiKey);
 
-var repoPath = configuration["RepoPath"] ?? throw new Exception("RepoPath not configured");
-var gitPlugin = new GitPlugin(repoPath);
+var gitPlugin = new GitPlugin(config.RepoPath);
 
 // Register the plugin
 builder.Plugins.AddFromObject(gitPlugin, "GitPlugin");
 builder.Plugins.AddFromPromptDirectory("Plugins/ReleaseNotesPlugin");
 builder.Plugins.AddFromPromptDirectory("Plugins/CommitExplainer");
 
-
 var kernel = builder.Build();
 
-foreach (var plugin in kernel.Plugins)
-{
-    Console.WriteLine($"[DEBUG] Loaded plugin: {plugin.Name}");
-    foreach (var function in plugin)
-    {
-        Console.WriteLine($"     Function: {function.Name}");
-    }
-}
+
+HelperFunctions.PrintLoadedPlugins(kernel);
 
 //retrieves the chat service from the kernel, which will actually send/receive AI responses
 var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
-// //tell Semantic Kernel how to choose functions if any are defined
+//tell Semantic Kernel how to choose functions if any are defined
 AzureOpenAIPromptExecutionSettings openAiPromptExecutionSettings = new()
 {
     FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
@@ -49,7 +37,7 @@ AzureOpenAIPromptExecutionSettings openAiPromptExecutionSettings = new()
 
 var chatHistory = new ChatHistory();
 
-var systemPrompt = configuration["SystemPrompt"];
+var systemPrompt = config.SystemPrompt;
 if (!string.IsNullOrWhiteSpace(systemPrompt))
 {
     chatHistory.AddSystemMessage(systemPrompt);
@@ -70,40 +58,22 @@ while (true)
 
     if (userInput == Commands.Help)
     {
-        Console.WriteLine("Available commands:");
-                Console.WriteLine("  !commits                   - Show the latest Git commits");
-                Console.WriteLine("  !setrepo <path>            - Set the current Git repository path");
-                Console.WriteLine("  !releasenotes [n]          - Generate release notes from the last [n] commits (default 10)");
-                Console.WriteLine("  !explain \"commit msg\"      - Explain a commit in plain English");
-                Console.WriteLine("  !pull                      - Pull latest changes from remote");
-                Console.WriteLine("  !commit \"message\"          - Stage all and commit with given message");
-                Console.WriteLine("  !findfixes                 - Show commits containing the word 'fix'");
-                Console.WriteLine("  !diff <sha1> <sha2>        - Compare two commits and list changes");
-                Console.WriteLine("  !help                      - Show this help message again");
-                Console.WriteLine("  exit                       - Quit the app");
-                Console.WriteLine("  [anything else]            - Sent to AI via Azure OpenAI");
-                continue;
+        HelperFunctions.ShowMenu();
+        continue;
     }
 
     //Handle plugin commands
     if (userInput.StartsWith(Commands.Commits))
     {
-        var result = await kernel.InvokeAsync("GitPlugin", "GetLatestCommits", new KernelArguments
-        {
-            ["count"] = 3
-        });
-        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+        await GitPluginHandler.ShowCommitsAsync(kernel);
         continue;
     }
 
+
     if (userInput.StartsWith(Commands.SetRepo + " "))
     {
-        var path = userInput.Substring("!setrepo ".Length);
-        var result = await kernel.InvokeAsync("GitPlugin", "SetRepositoryPath", new KernelArguments
-        {
-            ["newPath"] = path
-        });
-        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+        var path = userInput.Substring(Commands.SetRepo.Length).Trim();
+        await GitPluginHandler.SetRepoPathAsync(kernel, path);
         continue;
     }
 
@@ -112,77 +82,34 @@ while (true)
         var parts = userInput.Split(' ');
         int count = (parts.Length > 1 && int.TryParse(parts[1], out var parsed)) ? parsed : 10;
 
-        //Read current version
-        var currentVersion = File.Exists("VERSION") ? File.ReadAllText("VERSION").Trim() : "0.0.0";
-        var newVersion = HelperFunctions.IncrementPatchVersion(currentVersion);
-
-        Console.WriteLine($"[DEBUG] Current version: {currentVersion} → New version: {newVersion}");
-
-        //Get commits
-        var commitsResult = await kernel.InvokeAsync("GitPlugin", "GetLatestCommits", new KernelArguments
-        {
-            ["count"] = count
-        });
-
-        var commits = commitsResult.GetValue<string>() ?? "";
-
-        //Generate release notes
-        var releaseResult = await kernel.InvokeAsync("ReleaseNotesPlugin", "GenerateReleaseNotes", new KernelArguments
-        {
-            ["commits"] = commits
-        });
-
-        var notes = releaseResult.GetValue<string>() ?? "[No release notes generated]";
-
-        //Build full changelog entry
-        var changelog = $"## v{newVersion} - {DateTime.Now:yyyy-MM-dd}\n\n{notes}\n";
-
-        //Save release notes to file
-        File.AppendAllText("RELEASE_NOTES.md", changelog);
-        File.WriteAllText("VERSION", newVersion);
-
-        Console.WriteLine($"v{newVersion} release notes written to RELEASE_NOTES.md");
+        await ReleaseNotesHandler.GenerateAndSaveReleaseNotesAsync(kernel, count);
         continue;
     }
 
     if (userInput.StartsWith(Commands.Explain + " "))
     {
-        var commitText = userInput.Substring("!explain ".Length).Trim('"');
-
-        var explainResult = await kernel.InvokeAsync("CommitExplainer", "ExplainCommit", new KernelArguments
-        {
-            ["commit"] = commitText
-        });
-
-        Console.WriteLine($"[CommitExplainer] {explainResult.GetValue<string>()}");
+        var commitText = userInput.Substring(Commands.Explain.Length).Trim('"');
+        await CommitExplanationHandler.ExplainCommitAsync(kernel, commitText);
         continue;
     }
 
+
     if (userInput.StartsWith(Commands.Pull))
     {
-        var result = await kernel.InvokeAsync("GitPlugin", "PullRepository");
-        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+        await GitPluginHandler.PullAsync(kernel);
         continue;
     }
 
     if (userInput.StartsWith(Commands.Commit))
     {
-        var message = userInput.Substring("!commit ".Length).Trim('"');
-        var result = await kernel.InvokeAsync("GitPlugin", "CommitAllChanges", new KernelArguments
-        {
-            ["message"] = message
-        });
-        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+        var message = userInput.Substring(Commands.Commit.Length).Trim('"');
+        await GitPluginHandler.CommitAsync(kernel, message);
         continue;
     }
 
     if (userInput.StartsWith(Commands.FindFixes))
     {
-        var result = await kernel.InvokeAsync("GitPlugin", "FindCommitsByKeyword", new KernelArguments
-        {
-            ["keyword"] = "fix"
-        });
-        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+        await GitPluginHandler.FindFixesAsync(kernel);
         continue;
     }
 
@@ -191,16 +118,11 @@ while (true)
         var parts = userInput.Split(" ");
         if (parts.Length >= 3)
         {
-            var result = await kernel.InvokeAsync("GitPlugin", "CompareCommits", new KernelArguments
-            {
-                ["fromSha"] = parts[1],
-                ["toSha"] = parts[2]
-            });
-            Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+            await GitPluginHandler.CompareCommitsAsync(kernel, parts[1], parts[2]);
         }
         else
         {
-            Console.WriteLine("Usage: !diff <sha1> <sha2>");
+            Console.WriteLine($"Usage: {Commands.Diff} <sha1> <sha2>");
         }
         continue;
     }
@@ -209,7 +131,7 @@ while (true)
     chatHistory.AddUserMessage(userInput);
 
     var response = await chatCompletionService.GetChatMessageContentAsync(chatHistory, openAiPromptExecutionSettings, kernel);
-    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.ForegroundColor = ConsoleColor.Magenta;
     Console.WriteLine($"AI > {response.Content}");
     Console.ResetColor();
 

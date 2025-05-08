@@ -1,7 +1,21 @@
-namespace SemanticKernel;
+using Microsoft.SemanticKernel;
+
+namespace SemanticKernel.Utils;
 
 public static class HelperFunctions
 {
+    public static void PrintLoadedPlugins(Kernel kernel)
+    {
+        foreach (var plugin in kernel.Plugins)
+        {
+            Console.WriteLine($"[DEBUG] Loaded plugin: {plugin.Name}");
+            foreach (var function in plugin)
+            {
+                Console.WriteLine($"     Function: {function.Name}");
+            }
+        }
+    }
+
     public static void ShowMenu()
     {
         Console.WriteLine("\n\nAvailable commands:");
