@@ -75,6 +75,9 @@ Available commands:
 - Clone this repository - git clone https://github.com/yourname/SemanticKernel.git
 - cd SemanticKernel
 - Fill in appsettings.json
+1. Copy the provided `appsettings.template.json` to `appsettings.json`.
+2. Fill in your own OpenAI credentials and repo path.
+3. This file is ignored by Git to keep secrets secure.
 {
   "ModelName": "gpt-4",
   "Endpoint": "https://your-openai-endpoint.openai.azure.com/",
