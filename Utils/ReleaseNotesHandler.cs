@@ -11,7 +11,12 @@ public static class ReleaseNotesHandler
 {
     public static async Task GenerateAndSaveReleaseNotesAsync(Kernel kernel, int count = 10)
     {
-        var currentVersion = File.Exists("VERSION") ? File.ReadAllText("VERSION").Trim() : "0.0.0";
+        var outputDir = HelperFunctions.EnsureOutputDirectory();
+
+        var versionFile = Path.Combine(outputDir, "VERSION");
+        var releaseFile = Path.Combine(outputDir, "RELEASE_NOTES.md");
+
+        var currentVersion = File.Exists(versionFile) ? File.ReadAllText(versionFile).Trim() : "0.0.0";
         var newVersion = HelperFunctions.IncrementPatchVersion(currentVersion);
 
         Console.WriteLine($"[DEBUG] Current version: {currentVersion} → New version: {newVersion}");
@@ -31,9 +36,9 @@ public static class ReleaseNotesHandler
         var notes = releaseResult.GetValue<string>() ?? "[No release notes generated]";
         var changelog = $"## v{newVersion} - {DateTime.Now:yyyy-MM-dd}\n\n{notes}\n";
 
-        File.AppendAllText("RELEASE_NOTES.md", changelog);
-        File.WriteAllText("VERSION", newVersion);
+        File.AppendAllText(releaseFile, changelog);
+        File.WriteAllText(versionFile, newVersion);
 
-        Console.WriteLine($"v{newVersion} release notes written to RELEASE_NOTES.md");
+        Console.WriteLine($"v{newVersion} release notes written to: {releaseFile}");
     }
 }

@@ -23,11 +23,14 @@ namespace SemanticKernel.Utils
             var explanation = explainResult.GetValue<string>() ?? "[No explanation generated]";
             Console.WriteLine($"[CommitExplainer] {explanation}");
 
+            var outputDir = HelperFunctions.EnsureOutputDirectory();
+            var fullPath = Path.Combine(outputDir, FileName);
+
             var content = $"# Commit Explanation\n\n**Commit:** {commitText}\n\n**Explanation:**\n{explanation}\n";
 
-            File.AppendAllText(FileName, content + "\n---\n");
+            File.AppendAllText(fullPath, content + "\n---\n");
 
-            Console.WriteLine($"Explanation appended to: {FileName}");
+            Console.WriteLine($"Explanation appended to: {fullPath}");
         }
     }
 }

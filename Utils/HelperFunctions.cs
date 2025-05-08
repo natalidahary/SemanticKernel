@@ -9,6 +9,8 @@ namespace SemanticKernel.Utils;
 /// </summary>
 public static class HelperFunctions
 {
+    public const string OutputDirectory = "Outputs";
+
     public static void PrintLoadedPlugins(Kernel kernel)
     {
         foreach (var plugin in kernel.Plugins)
@@ -48,5 +50,13 @@ public static class HelperFunctions
         int patch = int.Parse(parts[2]) + 1;
 
         return $"{major}.{minor}.{patch}";
+    }
+
+    public static string EnsureOutputDirectory()
+    {
+        if (!Directory.Exists(OutputDirectory))
+            Directory.CreateDirectory(OutputDirectory);
+
+        return OutputDirectory;
     }
 }
