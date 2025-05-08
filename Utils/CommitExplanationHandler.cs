@@ -7,6 +7,8 @@ namespace SemanticKernel.Utils
 {
     public static class CommitExplanationHandler
     {
+        private const string FileName = "EXPLAIN.md";
+
         public static async Task ExplainCommitAsync(Kernel kernel, string commitText)
         {
             var explainResult = await kernel.InvokeAsync("CommitExplainer", "ExplainCommit", new KernelArguments
@@ -17,11 +19,11 @@ namespace SemanticKernel.Utils
             var explanation = explainResult.GetValue<string>() ?? "[No explanation generated]";
             Console.WriteLine($"[CommitExplainer] {explanation}");
 
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var fileName = $"EXPLAIN_{timestamp}.md";
-            File.WriteAllText(fileName, $"# Commit Explanation\n\n**Commit:** {commitText}\n\n**Explanation:**\n{explanation}\n");
+            var content = $"# Commit Explanation\n\n**Commit:** {commitText}\n\n**Explanation:**\n{explanation}\n";
 
-            Console.WriteLine($"Explanation saved to: {fileName}");
+            File.AppendAllText(FileName, content + "\n---\n");
+
+            Console.WriteLine($"Explanation appended to: {FileName}");
         }
     }
 }
