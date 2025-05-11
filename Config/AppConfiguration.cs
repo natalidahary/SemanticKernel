@@ -29,5 +29,7 @@ public class AppConfiguration
     public string RepoPath => _configuration["RepoPath"]
         ?? throw new Exception("RepoPath not configured");
 
-    public string? SystemPrompt => _configuration["SystemPrompt"];
+    public string? SystemPrompt =>
+    File.Exists("SystemPrompt.txt") ? File.ReadAllText("SystemPrompt.txt") : null;
+    
 }

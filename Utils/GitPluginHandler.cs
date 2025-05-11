@@ -15,7 +15,7 @@ public static class GitPluginHandler
     {
         var result = await kernel.InvokeAsync("GitPlugin", "GetLatestCommits", new KernelArguments
         {
-            ["count"] = 3
+            ["count"] = 5
         });
 
         Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");

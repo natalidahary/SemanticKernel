@@ -25,3 +25,26 @@
 
 **Summary:**  
 This release introduces key foundational features with a focus on AI integration, strengthens project structure, resolves numerous stability issues, and incorporates security improvements by handling sensitive configurations appropriately.
+## v0.0.2 - 2025-05-11
+
+# Release Notes
+
+## Features
+- Introduced AI functionality using Semantic Kernel to enhance application intelligence.
+- Added support for specifying a directory to output files, making file management more convenient.
+
+## Fixes
+- Resolved several bugs to improve overall system stability and reliability.
+- Fixed application structure issues and improved descriptions for better clarity.
+
+## Refactoring
+- Refinement of project structure for improved maintainability and readability.
+
+## Other
+- Ignored `appsettings.json` in version control and removed sensitive configuration details to enhance security.
+- Initial project setup and baseline implementation.
+
+---
+
+**Summary:**  
+This release adds significant new AI capabilities powered by Semantic Kernel, enhances file output management, fixes multiple bugs, and improves project security and structure. These updates lay a strong foundation for future development and smoother user experiences.
