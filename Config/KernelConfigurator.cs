@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 // using Microsoft.KernelMemory.SemanticKernelPlugin;
 using Microsoft.SemanticKernel;
 using Plugins;
+using Microsoft.Extensions.Logging; // Needed for LogLevel
+
 
 namespace SemanticKernel.Config;
 
@@ -20,6 +22,12 @@ public static class KernelConfigurator
             .AddAzureOpenAIChatCompletion(config.ModelName, config.Endpoint, config.ApiKey)
             .AddAzureOpenAITextEmbeddingGeneration(config.EmbeddingModel, config.Endpoint, config.ApiKey)
             .AddInMemoryVectorStore();
+
+        builder.Services.AddLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Information);
+        });
 
         // //Approach 2 - use Kernel Memory
         // var builder = Kernel.CreateBuilder()
@@ -52,8 +60,8 @@ public static class KernelConfigurator
 
         //     // Add KernelMemoryPlugin
         //     builder.Plugins.AddFromObject(new KernelMemoryPlugin(memory), "KernelMemoryPlugin");
-            
-            builder.Plugins.AddFromObject(new GitPlugin(config.RepoPath), "GitPlugin");
+
+        builder.Plugins.AddFromObject(new GitPlugin(config.RepoPath), "GitPlugin");
             builder.Plugins.AddFromPromptDirectory("Plugins/ReleaseNotesPlugin");
             builder.Plugins.AddFromPromptDirectory("Plugins/CommitExplainer");
 

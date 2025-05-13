@@ -39,6 +39,7 @@ if (!string.IsNullOrWhiteSpace(systemPrompt))
     chatHistory.AddSystemMessage(systemPrompt);
 }
 
+
 HelperFunctions.PrintLoadedPlugins(kernel);
 HelperFunctions.ShowMenu();
 

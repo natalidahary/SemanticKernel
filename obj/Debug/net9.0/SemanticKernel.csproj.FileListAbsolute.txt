@@ -69,6 +69,7 @@
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.AI.Abstractions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Configuration.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Binder.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Configuration.FileExtensions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Json.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.dll
@@ -76,7 +77,12 @@
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.FileProviders.Abstractions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.FileProviders.Physical.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.FileSystemGlobbing.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Logging.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Logging.Configuration.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Logging.Console.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Options.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Options.ConfigurationExtensions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.Primitives.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.Extensions.VectorData.Abstractions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.dll

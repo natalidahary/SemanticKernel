@@ -8,7 +8,7 @@ A developer-focused AI CLI powered by Microsoft Semantic Kernel and Azure OpenAI
 - Write to disk: RELEASE_NOTES.md, VERSION, EXPLAIN.md
 - Conversational AI with a customizable system prompt
 - Plugin-driven architecture for easy extension
-- Documentation QA – index .cs files and ask questions about their content
+- Documentation QA – index .txt files and ask questions about their content
 
 ## How Documentation Q&A Works
 !indexcode indexes all .cs files under the CodebasePath directory using Azure OpenAI embeddings.
@@ -39,13 +39,21 @@ Then, you can use !askcode <your question> to retrieve relevant snippets and ins
 ### Interact naturally with the assistant using commands:
 
 Me > !indexcode
-[Memory] Indexed 624 code chunks from 16 files.
+[Memory] Indexed 145 code chunks from 5 files.
 
-Me > !askcode What does the GitPlugin class do?
+Me > !askcode what is the SystemPrompt ?
 Top Results:
-- public class GitPlugin
-- public static class GitPluginHandler
-- /// Wraps all interactions with the GitPlugin into helper methods
+- /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/System.ClientModel.dll
+- /Users/natalidahary/Desktop/SemanticKernel/SemanticKernel/bin/Debug/net9.0/System.ClientModel.dll
+- Answer the question using relevant code context.
+
+Me > what is the SystemPrompt ?
+info: Microsoft.SemanticKernel.Connectors.AzureOpenAI.AzureOpenAIChatCompletionService[0]
+      Prompt tokens: 426. Completion tokens: 142. Total tokens: 568.
+AI > SystemPrompt generally refers to a special instruction or message given to an AI model (like ChatGPT) that sets the tone, behavior, and constraints for how it should respond to user inputs. It acts as a set of guidelines or a scenario that the AI should follow when interacting with users.
+For example, a SystemPrompt might instruct the AI to answer politely, act as a programming assistant, provide concise answers, or follow a specific format. It is not visible to end-users but is used by application developers or service providers to define and control the AI’s behavior in different contexts.
+In summary:  
+A SystemPrompt is an underlying directive or setup that guides how an AI assistant responds to user requests.
 
 Me > !commits
 [GitPlugin] - Fix typo in README (natalidahary, 2025-05-07)
@@ -106,7 +114,7 @@ Available commands:
   "Endpoint": "https://your-openai-endpoint.openai.azure.com/",
   "ApiKey": "your-azure-openai-key",
   "RepoPath": "/absolute/path/to/your/git/repo",
-  "CodebasePath": "/absolute/path/to/cs",
+  "CodebasePath": "/absolute/path/to/txt",
   "EmbeddingModel": "text-embedding-3-large"
 }
 - Run the application - dotnet run
