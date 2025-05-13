@@ -1,9 +1,6 @@
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Embeddings;
 using SemanticKernel.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SemanticKernel.Services;
 
@@ -34,20 +31,47 @@ public class CodeMemoryService
 
     public async Task IndexCodebaseAsync(string rootFolder)
     {
-        var files = Directory.GetFiles(rootFolder, "*.txt", SearchOption.AllDirectories);
-        var allChunks = new List<TextChunk>();
+        var files = Directory.GetFiles(rootFolder, "*.cs", SearchOption.AllDirectories)
+                            .Where(f => !f.Contains("/obj/") && !f.Contains("/bin/"))
+                            .ToArray();
 
+        Console.WriteLine($"\n[Info] Found {files.Length} .cs files to index:");
         foreach (var file in files)
         {
-            var chunks = DocumentReader.ParseFile(file);
-            allChunks.AddRange(chunks);
+            Console.WriteLine(" - " + file);
         }
 
-        await UploadToVectorStoreAsync("codebase-memory", allChunks);
+        var allChunks = new List<TextChunk>();
+
+        // Parse files into text chunks
+        foreach (var file in files)
+        {
+            var chunks = DocumentReader.ParseFile(file).ToList();
+            allChunks.AddRange(chunks);
+            Console.WriteLine($"[Chunking] {chunks.Count} chunks from {Path.GetFileName(file)}");
+        }
+
+        // Generate all embeddings in batch
+        var texts = allChunks.Select(c => c.Text).ToList();
+        var embeddings = await _embeddingService.GenerateEmbeddingsAsync(texts); // ensure this method exists
+
+        for (int i = 0; i < allChunks.Count; i++)
+        {
+            allChunks[i].TextEmbedding = embeddings[i];
+        }
+
+        // Upload all chunks to vector store in parallel
+        var collection = _vectorStore.GetCollection<string, TextChunk>("codebase-memory");
+        await collection.CreateCollectionIfNotExistsAsync();
+
+        var uploadTasks = allChunks.Select(chunk => collection.UpsertAsync(chunk));
+        await Task.WhenAll(uploadTasks);
+
         Console.WriteLine($"[Memory] Indexed {allChunks.Count} code chunks from {files.Length} files.");
     }
 
-    public async Task<List<string>> SearchAsync(string query, int topK = 3)
+
+    public async Task<List<string>> SearchAsync(string query, int topK = 15)
     {
         var results = new List<string>();
         var collection = _vectorStore.GetCollection<string, TextChunk>("codebase-memory");

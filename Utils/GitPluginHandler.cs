@@ -1,6 +1,4 @@
 using Microsoft.SemanticKernel;
-using System;
-using System.Threading.Tasks;
 
 namespace SemanticKernel.Utils;
 

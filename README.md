@@ -8,7 +8,7 @@ A developer-focused AI CLI powered by Microsoft Semantic Kernel and Azure OpenAI
 - Write to disk: RELEASE_NOTES.md, VERSION, EXPLAIN.md
 - Conversational AI with a customizable system prompt
 - Plugin-driven architecture for easy extension
-- Documentation QA – index .txt files and ask questions about their content
+- Documentation QA – index .cs files and ask questions about their content
 
 ## How Documentation Q&A Works
 !indexcode indexes all .cs files under the CodebasePath directory using Azure OpenAI embeddings.
@@ -24,7 +24,7 @@ Then, you can use !askcode <your question> to retrieve relevant snippets and ins
 ## Command Description:
 - !help	Show available commands
 - !commits	Show the latest Git commits
-- !indexcode	Index .txt files in your codebase for question-answering
+- !indexcode	Index .cs files in your codebase for question-answering
 - !askcode <question>	Ask questions about the indexed documentation
 - !setrepo <path>	Set the current Git repository
 - !releasenotes [n]	Generate release notes from last n commits
@@ -39,21 +39,63 @@ Then, you can use !askcode <your question> to retrieve relevant snippets and ins
 ### Interact naturally with the assistant using commands:
 
 Me > !indexcode
-[Memory] Indexed 145 code chunks from 5 files.
+[Info] Found 14 .cs files to index:
+ - /Users/natalidahary/Desktop/SemanticKernel/Program.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Config/AppInitializer.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Config/KernelConfigurator.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Config/AppConfiguration.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Plugins/GitPlugin.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Constants/Commands.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Utils/CommitExplanationHandler.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Utils/AskCodeHandler.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Utils/GitPluginHandler.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Utils/HelperFunctions.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Utils/ReleaseNotesHandler.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Models/TextChunk.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Services/CodeMemoryService.cs
+ - /Users/natalidahary/Desktop/SemanticKernel/Services/DocumentReader.cs
+[Chunking] 1 chunks from Program.cs
+[Chunking] 3 chunks from AppInitializer.cs
+[Chunking] 3 chunks from KernelConfigurator.cs
+....
+[Memory] Indexed 86 code chunks from 14 files.
 
-Me > !askcode what is the SystemPrompt ?
-Top Results:
-- /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/System.ClientModel.dll
-- /Users/natalidahary/Desktop/SemanticKernel/SemanticKernel/bin/Debug/net9.0/System.ClientModel.dll
-- Answer the question using relevant code context.
+Me > !askcode List the async methods in GitPluginHandler.
+[Debug] Code context:
 
-Me > what is the SystemPrompt ?
+public GitPlugin(string repoPath)
+    {
+        _repoPath = repoPath;
+    }
+
+    [KernelFunction, Description("Returns the latest Git commit messages from the current repository.")]
+---
+public static async Task ShowCommitsAsync(Kernel kernel)
+    {
+        var result = await kernel.InvokeAsync("GitPlugin", "GetLatestCommits", new KernelArguments
+        {
+            ["count"] = 5
+        });
+
+        Console.WriteLine($"[GitPlugin] {result.GetValue<string>()}");
+    }
+.....
+info: Microsoft.SemanticKernel.KernelFunction[0]
+      Function CodeMemoryPlugin-AskCodebase invoking.
 info: Microsoft.SemanticKernel.Connectors.AzureOpenAI.AzureOpenAIChatCompletionService[0]
-      Prompt tokens: 426. Completion tokens: 142. Total tokens: 568.
-AI > SystemPrompt generally refers to a special instruction or message given to an AI model (like ChatGPT) that sets the tone, behavior, and constraints for how it should respond to user inputs. It acts as a set of guidelines or a scenario that the AI should follow when interacting with users.
-For example, a SystemPrompt might instruct the AI to answer politely, act as a programming assistant, provide concise answers, or follow a specific format. It is not visible to end-users but is used by application developers or service providers to define and control the AI’s behavior in different contexts.
-In summary:  
-A SystemPrompt is an underlying directive or setup that guides how an AI assistant responds to user requests.
+      Prompt tokens: 1377. Completion tokens: 97. Total tokens: 1474.
+info: Microsoft.SemanticKernel.KernelFunction[0]
+      Function CodeMemoryPlugin-AskCodebase succeeded.
+info: Microsoft.SemanticKernel.KernelFunction[0]
+      Function CodeMemoryPlugin-AskCodebase completed. Duration: 1.348157s
+AI > Based on the code snippets provided, the async methods in GitPluginHandler are:
+1. ShowCommitsAsync(Kernel kernel)
+2. PullAsync(Kernel kernel)
+3. CommitAsync(Kernel kernel, string message)
+4. FindFixesAsync(Kernel kernel)
+5. CompareCommitsAsync(Kernel kernel, string fromSha, string toSha)
+6. SetRepoPathAsync(Kernel kernel, string path)
+These are all marked as static async Task methods.
 
 Me > !commits
 [GitPlugin] - Fix typo in README (natalidahary, 2025-05-07)
@@ -114,7 +156,7 @@ Available commands:
   "Endpoint": "https://your-openai-endpoint.openai.azure.com/",
   "ApiKey": "your-azure-openai-key",
   "RepoPath": "/absolute/path/to/your/git/repo",
-  "CodebasePath": "/absolute/path/to/txt",
+  "CodebasePath": "/absolute/path/to/cs",
   "EmbeddingModel": "text-embedding-3-large"
 }
 - Run the application - dotnet run

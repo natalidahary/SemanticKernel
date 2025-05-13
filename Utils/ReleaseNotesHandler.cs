@@ -1,5 +1,4 @@
 using Microsoft.SemanticKernel;
-using System;
 
 namespace SemanticKernel.Utils;
 

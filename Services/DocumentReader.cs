@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using SemanticKernel.Models;
 
 namespace SemanticKernel.Services;
@@ -10,27 +7,53 @@ public class DocumentReader
     {
         var lines = File.ReadAllLines(filePath);
         var docName = Path.GetFileName(filePath);
-
         var chunks = new List<TextChunk>();
-        for (var i = 0; i < lines.Length; i++)
+
+        var currentChunk = new List<string>();
+        int paragraphId = 0;
+
+        foreach (var line in lines)
         {
-            var line = lines[i].Trim();
-            if (string.IsNullOrEmpty(line))
-                continue;
+            var trimmed = line.Trim();
 
-            var paragraphId = i + 1;
-            var key = $"{docName}_{paragraphId}";
-
-            chunks.Add(new TextChunk
+            // Start a new chunk if we detect a method signature or class
+            if (trimmed.StartsWith("public") || trimmed.StartsWith("private") || trimmed.StartsWith("internal") || trimmed.StartsWith("class"))
             {
-                Key = key,
-                DocumentName = docName,
-                ParagraphId = paragraphId,
-                Text = line,
-                TextEmbedding = ReadOnlyMemory<float>.Empty
-            });
+                // Flush previous chunk
+                if (currentChunk.Count > 0)
+                {
+                    AddChunk(chunks, currentChunk, docName, ref paragraphId);
+                    currentChunk.Clear();
+                }
+            }
+
+            currentChunk.Add(line);
+        }
+
+        // Add the last chunk
+        if (currentChunk.Count > 0)
+        {
+            AddChunk(chunks, currentChunk, docName, ref paragraphId);
         }
 
         return chunks;
     }
+
+    private static void AddChunk(List<TextChunk> chunks, List<string> lines, string docName, ref int id)
+    {
+        var text = string.Join("\n", lines).Trim();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            id++;
+            chunks.Add(new TextChunk
+            {
+                Key = $"{docName}_{id}",
+                DocumentName = docName,
+                ParagraphId = id,
+                Text = text,
+                TextEmbedding = ReadOnlyMemory<float>.Empty
+            });
+        }
+    }
+
 }

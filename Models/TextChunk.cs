@@ -1,5 +1,4 @@
 using Microsoft.Extensions.VectorData;
-using System;
 
 namespace SemanticKernel.Models;
 

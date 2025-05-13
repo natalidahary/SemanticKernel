@@ -14,13 +14,7 @@ public static class AppInitializer
         var embeddingService = kernel.GetRequiredService<ITextEmbeddingGenerationService>();
         var memoryService = new CodeMemoryService(vectorStore, embeddingService);
 
-        var codeFiles = Directory.GetFiles(config.CodebasePath, "*.txt", SearchOption.AllDirectories);
-        foreach (var file in codeFiles)
-        {
-            var textChunks = DocumentReader.ParseFile(file);
-            memoryService.UploadToVectorStoreAsync("codebase-memory", textChunks).Wait();
-        }
-
         return memoryService;
     }
 }
+
