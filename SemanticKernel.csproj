@@ -12,6 +12,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.48.0" />
+    <!-- Approach 1 – using SK Vector Store, read documentation -->
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" Version="1.49.0-preview" />
+    
+    <!-- Approach 2 - use Kernel Memory -->
+    <!-- <PackageReference Include="Microsoft.KernelMemory" Version="0.98.250508.3" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.98.250508.3" /> -->
+
   </ItemGroup>
 
    <ItemGroup>

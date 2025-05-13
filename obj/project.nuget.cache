@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3h2Fk1Vhunw=",
+  "dgSpecHash": "FeftbIL6kS0=",
   "success": true,
   "projectFilePath": "/Users/natalidahary/Desktop/SemanticKernel/SemanticKernel.csproj",
   "expectedPackageFiles": [
@@ -10,7 +10,7 @@
     "/Users/natalidahary/.nuget/packages/libgit2sharp.nativebinaries/2.0.323/libgit2sharp.nativebinaries.2.0.323.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.bcl.hashcode/1.1.1/microsoft.bcl.hashcode.1.1.1.nupkg.sha512",
-    "/Users/natalidahary/.nuget/packages/microsoft.extensions.ai.abstractions/9.4.0-preview.1.25207.5/microsoft.extensions.ai.abstractions.9.4.0-preview.1.25207.5.nupkg.sha512",
+    "/Users/natalidahary/.nuget/packages/microsoft.extensions.ai.abstractions/9.4.3-preview.1.25230.7/microsoft.extensions.ai.abstractions.9.4.3-preview.1.25230.7.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.extensions.configuration/9.0.4/microsoft.extensions.configuration.9.0.4.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.4/microsoft.extensions.configuration.abstractions.9.0.4.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.extensions.configuration.fileextensions/9.0.4/microsoft.extensions.configuration.fileextensions.9.0.4.nupkg.sha512",
@@ -24,8 +24,9 @@
     "/Users/natalidahary/.nuget/packages/microsoft.extensions.primitives/9.0.4/microsoft.extensions.primitives.9.0.4.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.extensions.vectordata.abstractions/9.0.0-preview.1.25229.1/microsoft.extensions.vectordata.abstractions.9.0.0-preview.1.25229.1.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.semantickernel/1.48.0/microsoft.semantickernel.1.48.0.nupkg.sha512",
-    "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.abstractions/1.48.0/microsoft.semantickernel.abstractions.1.48.0.nupkg.sha512",
+    "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.abstractions/1.49.0/microsoft.semantickernel.abstractions.1.49.0.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.connectors.azureopenai/1.48.0/microsoft.semantickernel.connectors.azureopenai.1.48.0.nupkg.sha512",
+    "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.connectors.inmemory/1.49.0-preview/microsoft.semantickernel.connectors.inmemory.1.49.0-preview.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.connectors.openai/1.48.0/microsoft.semantickernel.connectors.openai.1.48.0.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/microsoft.semantickernel.core/1.48.0/microsoft.semantickernel.core.1.48.0.nupkg.sha512",
     "/Users/natalidahary/.nuget/packages/openai/2.2.0-beta.4/openai.2.2.0-beta.4.nupkg.sha512",

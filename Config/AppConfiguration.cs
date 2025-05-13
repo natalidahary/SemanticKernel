@@ -31,5 +31,11 @@ public class AppConfiguration
 
     public string? SystemPrompt =>
     File.Exists("SystemPrompt.txt") ? File.ReadAllText("SystemPrompt.txt") : null;
-    
+
+    public string EmbeddingModel => _configuration["EmbeddingModel"]
+    ?? throw new ApplicationException("EmbeddingModel not found");
+
+    public string CodebasePath => _configuration["CodebasePath"]
+    ?? throw new Exception("CodebasePath not configured");
+
 }

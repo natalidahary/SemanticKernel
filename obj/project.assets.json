@@ -142,7 +142,7 @@
           }
         }
       },
-      "Microsoft.Extensions.AI.Abstractions/9.4.0-preview.1.25207.5": {
+      "Microsoft.Extensions.AI.Abstractions/9.4.3-preview.1.25230.7": {
         "type": "package",
         "compile": {
           "lib/net9.0/Microsoft.Extensions.AI.Abstractions.dll": {
@@ -398,12 +398,12 @@
           }
         }
       },
-      "Microsoft.SemanticKernel.Abstractions/1.48.0": {
+      "Microsoft.SemanticKernel.Abstractions/1.49.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
           "Microsoft.Bcl.HashCode": "1.1.1",
-          "Microsoft.Extensions.AI.Abstractions": "9.4.0-preview.1.25207.5",
+          "Microsoft.Extensions.AI.Abstractions": "9.4.3-preview.1.25230.7",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
           "Microsoft.Extensions.VectorData.Abstractions": "9.0.0-preview.1.25229.1",
@@ -435,6 +435,26 @@
         },
         "runtime": {
           "lib/net8.0/Microsoft.SemanticKernel.Connectors.AzureOpenAI.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.SemanticKernel.Connectors.InMemory/1.49.0-preview": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "9.4.3-preview.1.25230.7",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.VectorData.Abstractions": "9.0.0-preview.1.25229.1",
+          "Microsoft.SemanticKernel.Abstractions": "1.49.0",
+          "System.Numerics.Tensors": "9.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Microsoft.SemanticKernel.Connectors.InMemory.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.SemanticKernel.Connectors.InMemory.dll": {
             "related": ".xml"
           }
         }
@@ -776,10 +796,10 @@
         "version.txt"
       ]
     },
-    "Microsoft.Extensions.AI.Abstractions/9.4.0-preview.1.25207.5": {
-      "sha512": "CptQvHk8wY+qb+AA3SoKlc5NQcXSoFNbt8Z+bAkt/tEZ61JMxFZ0dMG1AwCn14hRCUinFbxyPYXr5Zrjp99m3g==",
+    "Microsoft.Extensions.AI.Abstractions/9.4.3-preview.1.25230.7": {
+      "sha512": "iXTDPJZjJMBK+x10p32TE4WeSHjwn2spoL6c2t+MWkJiqSq2yRGQhxvnZZxlAAhA9KDRPMNvLQFrdj/KmfcgFg==",
       "type": "package",
-      "path": "microsoft.extensions.ai.abstractions/9.4.0-preview.1.25207.5",
+      "path": "microsoft.extensions.ai.abstractions/9.4.3-preview.1.25230.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -793,7 +813,7 @@
         "lib/net9.0/Microsoft.Extensions.AI.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.AI.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.AI.Abstractions.xml",
-        "microsoft.extensions.ai.abstractions.9.4.0-preview.1.25207.5.nupkg.sha512",
+        "microsoft.extensions.ai.abstractions.9.4.3-preview.1.25230.7.nupkg.sha512",
         "microsoft.extensions.ai.abstractions.nuspec"
       ]
     },
@@ -1198,10 +1218,10 @@
         "microsoft.semantickernel.nuspec"
       ]
     },
-    "Microsoft.SemanticKernel.Abstractions/1.48.0": {
-      "sha512": "zx37MZSWIF+cPwsJeS8/hpLhz8WLdcUOWu1JcOnTflbpnYd0fIlmP6yOx3ZntpiR/SWYVWkF/7vo++29uvd+kw==",
+    "Microsoft.SemanticKernel.Abstractions/1.49.0": {
+      "sha512": "a1gUzzu/bYAV7YVaE8fen5663gFIpifiE4806s5ZDmS6PZQ4vOj/8lbvIoky6DqBwPl73EU2eUN7Y7Hicqb+OA==",
       "type": "package",
-      "path": "microsoft.semantickernel.abstractions/1.48.0",
+      "path": "microsoft.semantickernel.abstractions/1.49.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1211,7 +1231,7 @@
         "lib/net8.0/Microsoft.SemanticKernel.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.SemanticKernel.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.SemanticKernel.Abstractions.xml",
-        "microsoft.semantickernel.abstractions.1.48.0.nupkg.sha512",
+        "microsoft.semantickernel.abstractions.1.49.0.nupkg.sha512",
         "microsoft.semantickernel.abstractions.nuspec"
       ]
     },
@@ -1230,6 +1250,25 @@
         "lib/netstandard2.0/Microsoft.SemanticKernel.Connectors.AzureOpenAI.xml",
         "microsoft.semantickernel.connectors.azureopenai.1.48.0.nupkg.sha512",
         "microsoft.semantickernel.connectors.azureopenai.nuspec"
+      ]
+    },
+    "Microsoft.SemanticKernel.Connectors.InMemory/1.49.0-preview": {
+      "sha512": "7ZqPAJbwmqm7okJ/vKYp3SIrJd1i6IYwj6WmY0q7/wvx2SLUOenqK7MrabOEZOmprNCPqbHQbyNplBonp8l99Q==",
+      "type": "package",
+      "path": "microsoft.semantickernel.connectors.inmemory/1.49.0-preview",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "NUGET.md",
+        "icon.png",
+        "lib/net462/Microsoft.SemanticKernel.Connectors.InMemory.dll",
+        "lib/net462/Microsoft.SemanticKernel.Connectors.InMemory.xml",
+        "lib/net8.0/Microsoft.SemanticKernel.Connectors.InMemory.dll",
+        "lib/net8.0/Microsoft.SemanticKernel.Connectors.InMemory.xml",
+        "lib/netstandard2.0/Microsoft.SemanticKernel.Connectors.InMemory.dll",
+        "lib/netstandard2.0/Microsoft.SemanticKernel.Connectors.InMemory.xml",
+        "microsoft.semantickernel.connectors.inmemory.1.49.0-preview.nupkg.sha512",
+        "microsoft.semantickernel.connectors.inmemory.nuspec"
       ]
     },
     "Microsoft.SemanticKernel.Connectors.OpenAI/1.48.0": {
@@ -1601,7 +1640,8 @@
       "LibGit2Sharp >= 0.31.0",
       "Microsoft.Extensions.Configuration >= 9.0.4",
       "Microsoft.Extensions.Configuration.Json >= 9.0.4",
-      "Microsoft.SemanticKernel >= 1.48.0"
+      "Microsoft.SemanticKernel >= 1.48.0",
+      "Microsoft.SemanticKernel.Connectors.InMemory >= 1.49.0-preview"
     ]
   },
   "packageFolders": {
@@ -1667,6 +1707,10 @@
           "Microsoft.SemanticKernel": {
             "target": "Package",
             "version": "[1.48.0, )"
+          },
+          "Microsoft.SemanticKernel.Connectors.InMemory": {
+            "target": "Package",
+            "version": "[1.49.0-preview, )"
           }
         },
         "imports": [

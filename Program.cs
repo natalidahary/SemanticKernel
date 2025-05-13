@@ -1,33 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.SemanticKernel;
+﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.Embeddings;
+using Microsoft.Extensions.VectorData;
 using Plugins;
 using SemanticKernel.Config;
 using SemanticKernel.Utils;
 using SemanticKernel.Constants;
+using SemanticKernel.Services;
+// using Microsoft.KernelMemory;
 
 // Load configuration values from appsettings.json
 var config = new AppConfiguration();
+var kernel = KernelConfigurator.Configure(config);
 
-// Create and configure the Semantic Kernel with Azure OpenAI model
-var builder = Kernel.CreateBuilder()
-    .AddAzureOpenAIChatCompletion(config.ModelName, config.Endpoint, config.ApiKey);
+//Approach 1 – using SK Vector Store, read documentation
+var memoryService = AppInitializer.SetupCodeMemory(config, kernel);
 
-// Create GitPlugin with the configured repository path
-var gitPlugin = new GitPlugin(config.RepoPath);
+// //Approach 2 - use Kernel Memory
+// var memory = kernel.GetRequiredService<IKernelMemory>();
+// var memoryService = new KernelMemoryService(memory);
 
-// Register custom plugins (functions and prompt templates)
-builder.Plugins.AddFromObject(gitPlugin, "GitPlugin");
-builder.Plugins.AddFromPromptDirectory("Plugins/ReleaseNotesPlugin");
-builder.Plugins.AddFromPromptDirectory("Plugins/CommitExplainer");
-
-// Build the kernel which manages plugins and LLM communication
-var kernel = builder.Build();
-
-HelperFunctions.PrintLoadedPlugins(kernel);
-
-// Retrieve the chat service for free-text AI conversations
 var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
 // Define how the AI should behave (auto function selection, etc.)
@@ -46,7 +39,9 @@ if (!string.IsNullOrWhiteSpace(systemPrompt))
     chatHistory.AddSystemMessage(systemPrompt);
 }
 
+HelperFunctions.PrintLoadedPlugins(kernel);
 HelperFunctions.ShowMenu();
+
 
 while (true)
 {
@@ -66,21 +61,34 @@ while (true)
         continue;
     }
 
-    //Handle plugin commands
-    if (userInput.StartsWith(Commands.Commits))
+    //Approach 1 – using SK Vector Store, read documentation
+    if (userInput.StartsWith(Commands.IndexCode))
     {
-        await GitPluginHandler.ShowCommitsAsync(kernel);
+        await memoryService.IndexCodebaseAsync(config.CodebasePath);
         continue;
     }
 
+    // //Approach 2 - use Kernel Memory
+    // if (userInput.StartsWith(Commands.IndexCode))
+    // {
+    //     await memoryService.ImportCodebaseAsync(config.CodebasePath);
+    //     continue;
+    // }
 
-    if (userInput.StartsWith(Commands.SetRepo + " "))
+    if (userInput.StartsWith(Commands.AskCode))
     {
-        var path = userInput.Substring(Commands.SetRepo.Length).Trim();
-        await GitPluginHandler.SetRepoPathAsync(kernel, path);
+        var question = userInput.Substring(Commands.AskCode.Length).Trim();
+        var results = await memoryService.SearchAsync(question);
+
+        Console.WriteLine("Top Results:");
+        foreach (var result in results)
+        {
+            Console.WriteLine("- " + result);
+        }
         continue;
     }
-
+    
+   //Handle plugin prompts
     if (userInput.StartsWith(Commands.ReleaseNotes))
     {
         var parts = userInput.Split(' ');
@@ -97,6 +105,19 @@ while (true)
         continue;
     }
 
+    //Handle plugin functions
+    if (userInput.StartsWith(Commands.Commits))
+    {
+        await GitPluginHandler.ShowCommitsAsync(kernel);
+        continue;
+    }
+
+    if (userInput.StartsWith(Commands.SetRepo + " "))
+    {
+        var path = userInput.Substring(Commands.SetRepo.Length).Trim();
+        await GitPluginHandler.SetRepoPathAsync(kernel, path);
+        continue;
+    }
 
     if (userInput.StartsWith(Commands.Pull))
     {

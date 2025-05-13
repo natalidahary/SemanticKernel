@@ -82,6 +82,7 @@
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.Abstractions.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.Connectors.AzureOpenAI.dll
+/Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.Connectors.InMemory.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.Connectors.OpenAI.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/Microsoft.SemanticKernel.Core.dll
 /Users/natalidahary/Desktop/SemanticKernel/bin/Debug/net9.0/OpenAI.dll

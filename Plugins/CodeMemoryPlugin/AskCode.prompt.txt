@@ -1,0 +1,6 @@
+You are a codebase assistant. Use the vector search results to answer the user’s technical question.
+
+Question:
+{{$question}}
+
+Answer the question using relevant code context.

@@ -8,6 +8,8 @@ namespace SemanticKernel.Constants
     {
         public const string Help = "!help";
         public const string Exit = "exit";
+        public const string IndexCode = "!indexcode";
+        public const string AskCode = "!askcode";
         public const string Commits = "!commits";
         public const string SetRepo = "!setrepo";
         public const string ReleaseNotes = "!releasenotes";

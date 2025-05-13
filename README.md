@@ -1,5 +1,5 @@
-# SemanticKernel
-A developer-friendly AI CLI tool powered by Microsoft Semantic Kernel and Azure OpenAI, built to streamline Git workflows with natural language. Easily generate release notes, explain commits in plain English, and manage repositories with intelligent command support.
+# SemanticKernel Dev Assistant
+A developer-focused AI CLI powered by Microsoft Semantic Kernel and Azure OpenAI. This tool lets you interact with your Git repository and documentation using natural language—making commit explanation, release note generation, and codebase Q&A intuitive and automated.
 
 ## Features:
 - Explain commits in clear, simple language
@@ -8,10 +8,24 @@ A developer-friendly AI CLI tool powered by Microsoft Semantic Kernel and Azure 
 - Write to disk: RELEASE_NOTES.md, VERSION, EXPLAIN.md
 - Conversational AI with a customizable system prompt
 - Plugin-driven architecture for easy extension
+- Documentation QA – index .cs files and ask questions about their content
+
+## How Documentation Q&A Works
+!indexcode indexes all .cs files under the CodebasePath directory using Azure OpenAI embeddings.
+This populates an in-memory vector store with chunks of your code.
+Then, you can use !askcode <your question> to retrieve relevant snippets and insights from your codebase.
+- inMemory connector
+  You used the Microsoft.SemanticKernel.Connectors.InMemory package.
+- Vector Store ingest data
+  Done through UploadToVectorStoreAsync() with proper embeddings.
+- Text search plugin
+  Implemented through semantic search using ITextEmbeddingGenerationService + vector store collection.
 
 ## Command Description:
 - !help	Show available commands
 - !commits	Show the latest Git commits
+- !indexcode	Index .txt files in your codebase for question-answering
+- !askcode <question>	Ask questions about the indexed documentation
 - !setrepo <path>	Set the current Git repository
 - !releasenotes [n]	Generate release notes from last n commits
 - !explain "commit msg"	Explain a commit in simple English
@@ -23,6 +37,15 @@ A developer-friendly AI CLI tool powered by Microsoft Semantic Kernel and Azure 
 
 ## Usage Examples:
 ### Interact naturally with the assistant using commands:
+
+Me > !indexcode
+[Memory] Indexed 624 code chunks from 16 files.
+
+Me > !askcode What does the GitPlugin class do?
+Top Results:
+- public class GitPlugin
+- public static class GitPluginHandler
+- /// Wraps all interactions with the GitPlugin into helper methods
 
 Me > !commits
 [GitPlugin] - Fix typo in README (natalidahary, 2025-05-07)
@@ -83,7 +106,8 @@ Available commands:
   "Endpoint": "https://your-openai-endpoint.openai.azure.com/",
   "ApiKey": "your-azure-openai-key",
   "RepoPath": "/absolute/path/to/your/git/repo",
-  "SystemPrompt": "You are an AI assistant that helps developers work with Git. Be concise, helpful, and clear."
+  "CodebasePath": "/absolute/path/to/cs",
+  "EmbeddingModel": "text-embedding-3-large"
 }
 - Run the application - dotnet run
 

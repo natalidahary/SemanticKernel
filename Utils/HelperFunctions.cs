@@ -26,6 +26,12 @@ public static class HelperFunctions
     public static void ShowMenu()
     {
         Console.WriteLine("\n\nAvailable commands:");
+        //Approach 2 - use Kernel Memory
+        // Console.WriteLine("  !indexcode                 - Index your C# codebase into Kernel Memory");
+        // Console.WriteLine("  !askcode <question>        - Ask a question about your indexed code");
+        //Approach 1 – using SK Vector Store, read documentation
+        Console.WriteLine("  !indexcode                 - index your .txt files into memory");
+        Console.WriteLine("  !askcode <question>        - ask a question about your code");
         Console.WriteLine("  !commits                   - Show the latest Git commits");
         Console.WriteLine("  !setrepo <path>            - Set the current Git repository path");
         Console.WriteLine("  !releasenotes [n]          - Generate release notes from the last [n] commits (default 10)");
