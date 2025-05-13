@@ -6,6 +6,11 @@ using SemanticKernel.Services;
 namespace SemanticKernel.Config;
 
 #pragma warning disable SKEXP0001
+/// <summary>
+/// Sets up services related to code memory using vector store and embeddings.
+/// Retrieves required services (IVectorStore, ITextEmbeddingGenerationService) 
+/// from the kernel and initializes CodeMemoryService.
+/// </summary>
 public static class AppInitializer
 {
     public static CodeMemoryService SetupCodeMemory(AppConfiguration config, Kernel kernel)

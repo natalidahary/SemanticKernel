@@ -6,6 +6,12 @@ using Plugins;
 namespace SemanticKernel.Config;
 
 #pragma warning disable SKEXP0010
+/// <summary>
+/// Configures and constructs the Semantic Kernel, adds OpenAI models, logging, and plugins.
+/// Adds Azure OpenAI chat model and embedding model to the kernel.
+/// Uses in-memory vector store for semantic search.
+/// Loads several custom plugins from folders and one (GitPlugin) from a class instance.
+/// </summary>
 public static class KernelConfigurator
 {
     public static Kernel Configure(AppConfiguration config)

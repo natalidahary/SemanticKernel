@@ -5,13 +5,13 @@ using SemanticKernel.Config;
 using SemanticKernel.Utils;
 using SemanticKernel.Constants;
 
-// Load configuration values from appsettings.json
+//Initializes all dependencies: config, kernel, memory services, chat completion.
 var config = new AppConfiguration();
 var kernel = KernelConfigurator.Configure(config);
 var memoryService = AppInitializer.SetupCodeMemory(config, kernel);
 var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
-// Define how the AI should behave (auto function selection, etc.)
+//Sets the model behavior to automatically pick a relevant function from enabled plugins.
 AzureOpenAIPromptExecutionSettings openAiPromptExecutionSettings = new()
 {
     FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()

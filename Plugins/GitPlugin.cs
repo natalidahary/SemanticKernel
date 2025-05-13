@@ -39,8 +39,7 @@ public class GitPlugin
     }
 
     [KernelFunction, Description("Updates the path to the Git repository being used.")]
-    public string SetRepositoryPath(
-        [Description("New path to a local Git repository.")] string newPath)
+    public string SetRepositoryPath([Description("New path to a local Git repository.")] string newPath)
     {
         if (!Directory.Exists(newPath))
         {
@@ -71,8 +70,7 @@ public class GitPlugin
     }
 
     [KernelFunction, Description("Stages all changes and creates a Git commit with the given message.")]
-    public string CommitAllChanges(
-        [Description("Commit message describing the changes.")] string message)
+    public string CommitAllChanges([Description("Commit message describing the changes.")] string message)
     {
         using var repo = new Repository(_repoPath);
 

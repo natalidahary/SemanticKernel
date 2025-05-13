@@ -48,3 +48,16 @@ This release introduces key foundational features with a focus on AI integration
 
 **Summary:**  
 This release adds significant new AI capabilities powered by Semantic Kernel, enhances file output management, fixes multiple bugs, and improves project security and structure. These updates lay a strong foundation for future development and smoother user experiences.
+## v0.0.3 - 2025-05-13
+
+## Release Notes
+
+### Features
+- Integrated enhanced logging support by adding `builder.Services.AddLogging`, improving monitoring and diagnostics capabilities.
+
+### Fixes
+- Resolved various bugs to improve stability and user experience.
+
+---
+
+This release introduces better logging functionality and general bug fixes, leading to a more robust and maintainable application.

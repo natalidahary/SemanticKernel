@@ -1,8 +1,14 @@
 using Microsoft.SemanticKernel;
 using SemanticKernel.Services;
 
+
 namespace SemanticKernel.Utils
 {
+    /// <summary>
+    /// Handles questions about the indexed codebase by:
+    /// Retrieving relevant code snippets.
+    /// Sending them with the user's question to the AI plugin.
+    /// </summary>
     public static class AskCodeHandler
     {
         public static async Task AskCodebaseQuestionAsync(Kernel kernel, CodeMemoryService memoryService, string question)

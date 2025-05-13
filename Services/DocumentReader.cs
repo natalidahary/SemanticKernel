@@ -1,6 +1,14 @@
 using SemanticKernel.Models;
 
 namespace SemanticKernel.Services;
+
+/// <summary>
+/// Parses C# source code files into semantically meaningful chunks (like methods or classes).
+/// Reads all lines of a file.
+/// Uses heuristics to identify where new sections of code begin.
+/// Groups accumulated lines into a TextChunk.
+/// Creates a TextChunk instance from collected lines.
+/// </summary>
 public class DocumentReader
 {
     public static IEnumerable<TextChunk> ParseFile(string filePath)

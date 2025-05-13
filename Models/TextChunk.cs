@@ -2,6 +2,10 @@ using Microsoft.Extensions.VectorData;
 
 namespace SemanticKernel.Models;
 
+/// <summary>
+/// Represents a chunk of source code that can be embedded and stored
+/// in a vector database for semantic search.
+/// </summary>
 public record TextChunk
 {
     [VectorStoreRecordKey]

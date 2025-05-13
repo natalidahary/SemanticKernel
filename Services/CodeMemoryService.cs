@@ -4,7 +4,13 @@ using SemanticKernel.Models;
 
 namespace SemanticKernel.Services;
 
-
+/// <summary>
+/// Handles reading, embedding, indexing, and searching source code using vector storage.
+/// Uploads text chunks with embeddings into the vector store.
+/// Generates an embedding for each chunk of code text.
+/// Indexes all .cs files from the given root folder.
+/// Performs a vector similarity search based on a question or keyword.
+/// </summary>
 #pragma warning disable SKEXP0001
 public class CodeMemoryService
 {
